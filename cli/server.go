@@ -3,14 +3,17 @@ package cli
 import (
 	"log"
 	"net"
+	"unsafe"
+
+	"github.com/luizbranco/pilgrims"
 )
 
-type message int
-
-const (
-	ping message = iota
-	pong
-)
+func init() {
+	var state pilgrims.GameState
+	state.Board = pilgrims.NewBoard()
+	log.Println(unsafe.Sizeof(state))
+	log.Println(state.Board)
+}
 
 func Listen() error {
 	addr := net.UDPAddr{
@@ -34,52 +37,38 @@ func Listen() error {
 		log.Printf("%+v: %s", remote, buf[:n])
 	}
 
-	/*
-
-
-
-
-
-
-
-
-				    __
-				 __/2 \__
-				/1 \__/	 \
-				\__/10\__/
-				   \__/
-
-					____
-				 /    \      /
-				/      \____/
-				\      /    \
-				 \____/ 10   \
-				      \ brick/
-							 \____/
-
-
-		     		    _____
-		           /     \
-		          /       \
-		    ,----s         )----.
-		   /      \       /      \
-		  /        C_____/        \
-		  \        /     \        /
-		   \      /       \      /
-		    )----(         )----(
-		   /      \       /      \
-		  /        \_____/        \
-		  \        /     \        /
-		   \      /       \      /
-		    `----(         )----'
-		          \       /
-		           \_____/
-
-
-			build road 10 9
-			build city 10 9 6
-
-	*/
-
 	return nil
 }
+
+const board string = `
+
+                 ,----.
+                /      \
+          _____/        \_____
+         /     \        /     \
+        /       \      /       \
+  ,----(         )----(         )----.
+ /      \       /      \       /      \
+/        \_____/        \_____/        \
+\        /     \        /     \        /
+ \      /       \      /       \      /
+  )----(         )----(         )----(
+ /      \       /      \       /      \
+/        \_____/        \_____/        \
+\        /     \        /     \        /
+ \      /       \      /       \      /
+  )----(         )----(         )----(
+ /      \       /      \       /      \
+/        \_____/        \_____/        \
+\        /     \        /     \        /
+ \      /       \      /       \      /
+  '----(         )----(         )----'
+        \       /      \       /
+				 \_____/        \_____/
+							 \        /
+			          \      /
+								 '----'
+
+build road a b c
+build city 10 9 6
+`
