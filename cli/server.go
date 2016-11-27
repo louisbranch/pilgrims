@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
 	"log"
 	"net"
 	"unsafe"
@@ -11,8 +14,25 @@ import (
 func init() {
 	var state pilgrims.GameState
 	state.Board = pilgrims.NewBoard()
-	log.Println(unsafe.Sizeof(state))
-	log.Println(state.Board)
+	fmt.Println(unsafe.Sizeof(state))
+	fmt.Println(state.Board)
+
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, binary.LittleEndian, state)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("% x", buf.Bytes())
+	fmt.Println(unsafe.Sizeof(buf))
+
+	var s pilgrims.GameState
+
+	err = binary.Read(buf, binary.LittleEndian, &s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(unsafe.Sizeof(s))
+	fmt.Println(s.Board)
 }
 
 func Listen() error {
